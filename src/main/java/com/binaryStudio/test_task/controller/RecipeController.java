@@ -11,44 +11,52 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/recipe")
+@RequestMapping("recipe")
 @RequiredArgsConstructor
 public class RecipeController {
 
   private transient final RecipeService service;
 
   @PostMapping
-  public ResponseEntity<RecipeDto> save_RecipeDto(@RequestBody RecipeDto recipeDto) {
+  public ResponseEntity<RecipeDto> save_recipeDto( @Validated @RequestBody RecipeDto recipeDto) {
     RecipeDto saved_recipe = service.save_recipe(recipeDto);
     return new ResponseEntity<>(saved_recipe, HttpStatus.CREATED);
   }
 
+  @PostMapping("{id}")
+  public ResponseEntity<RecipeDto> save_child_recipeDto( @Validated @RequestBody RecipeDto childRecipeDto,
+                                                         @PathVariable("id") RecipeDto parentRecipeDto) {
+    childRecipeDto.setParentRecipe(parentRecipeDto);
+    RecipeDto saved_recipe = service.save_recipe(childRecipeDto);
+    return new ResponseEntity<>(saved_recipe, HttpStatus.CREATED);
+  }
+
   @PutMapping
-  public ResponseEntity<RecipeDto> update_RecipeDto(@RequestBody @Validated RecipeDto recipeDto) {
+  public ResponseEntity<RecipeDto> update_recipeDto( @Validated @RequestBody RecipeDto recipeDto) {
     RecipeDto updated_recipe = service.update_recipe(recipeDto);
     return new ResponseEntity<>(updated_recipe, HttpStatus.OK);
   }
 
-  @DeleteMapping("/{recipeId}")
-  public ResponseEntity<String> delete_RecipeDto(@PathVariable Long recipeId) {
-    service.delete_by_id(recipeId);
+  @DeleteMapping("{id}")
+  public ResponseEntity<String> delete_recipeDto(@PathVariable Long id) {
+    service.delete_by_id(id);
     return new ResponseEntity<String>("Deleted successful", HttpStatus.OK);
   }
 
   @GetMapping
-  public ResponseEntity<List<RecipeDto>> find_all_RecipeDtos() {
+  public ResponseEntity<List<RecipeDto>> find_all_recipeDtos() {
     List<RecipeDto> recipeDtoList = service.find_all();
     return new ResponseEntity<>(recipeDtoList, HttpStatus.OK);
   }
 
-  @GetMapping("/child")
-  public ResponseEntity<List<RecipeDto>> find_all_child_RecipeDtos(@RequestBody @Validated RecipeDto parentRecipeDto) {
+  @GetMapping("{id}")
+  public ResponseEntity<List<RecipeDto>> find_all_child_recipeDtos(@PathVariable("id") RecipeDto parentRecipeDto) {
     List<RecipeDto> childRecipeDtoList = service.find_all_by_parent_recipe(parentRecipeDto);
     return new ResponseEntity<>(childRecipeDtoList, HttpStatus.OK);
   }
 
-  @GetMapping("/recipe_without_parent")
-  public ResponseEntity<List<RecipeDto>> find_all_RecipeDtos_without_parent() {
+  @GetMapping("recipe_without_parent")
+  public ResponseEntity<List<RecipeDto>> find_all_recipeDtos_without_parent() {
     List<RecipeDto> recipeWithoutParentList = service.find_all_recipe_without_parent();
     return new ResponseEntity<>(recipeWithoutParentList, HttpStatus.OK);
   }

@@ -12,6 +12,9 @@ import java.util.Date;
 @Data
 public class RecipeDto {
 
+  interface Child {
+  }
+
   private Long recipeId;
 
   @NotNull
