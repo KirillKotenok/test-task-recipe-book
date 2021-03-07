@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("recipe")
+@RequestMapping("/recipe")
 @RequiredArgsConstructor
 public class RecipeController {
 
@@ -23,10 +23,10 @@ public class RecipeController {
     return new ResponseEntity<>(saved_recipe, HttpStatus.CREATED);
   }
 
-  @PostMapping("{id}")
+  @PostMapping("/{id}")
   public ResponseEntity<RecipeDto> save_child_recipeDto( @Validated @RequestBody RecipeDto childRecipeDto,
-                                                         @PathVariable("id") RecipeDto parentRecipeDto) {
-    childRecipeDto.setParentRecipe(parentRecipeDto);
+                                                         @PathVariable("id") Long parentId) {
+    childRecipeDto.setParentRecipe(service.find_by_id(parentId));
     RecipeDto saved_recipe = service.save_recipe(childRecipeDto);
     return new ResponseEntity<>(saved_recipe, HttpStatus.CREATED);
   }
@@ -37,19 +37,19 @@ public class RecipeController {
     return new ResponseEntity<>(updated_recipe, HttpStatus.OK);
   }
 
-  @DeleteMapping("{id}")
+  @DeleteMapping("/delete/{id}")
   public ResponseEntity<String> delete_recipeDto(@PathVariable Long id) {
     service.delete_by_id(id);
     return new ResponseEntity<String>("Deleted successful", HttpStatus.OK);
   }
 
-  @GetMapping
+  @GetMapping("/all")
   public ResponseEntity<List<RecipeDto>> find_all_recipeDtos() {
     List<RecipeDto> recipeDtoList = service.find_all();
     return new ResponseEntity<>(recipeDtoList, HttpStatus.OK);
   }
 
-  @GetMapping("{id}")
+  @GetMapping("/child/{id}")
   public ResponseEntity<List<RecipeDto>> find_all_child_recipeDtos(@PathVariable("id") RecipeDto parentRecipeDto) {
     List<RecipeDto> childRecipeDtoList = service.find_all_by_parent_recipe(parentRecipeDto);
     return new ResponseEntity<>(childRecipeDtoList, HttpStatus.OK);

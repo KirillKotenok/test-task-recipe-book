@@ -93,14 +93,6 @@ public class RecipeServiceImplTest {
     assertEquals(3, recipeService.find_all().size());
   }
 
-
-  @Test
-  public void whenFindRecipeByIdThanReturnThisRecipe() {
-    RecipeDto savedRecipe = recipeService.save_recipe(testRecipeDto1);
-    RecipeDto recipeFromDb = recipeService.find_by_id(savedRecipe.getRecipeId());
-    assertEquals(savedRecipe, recipeFromDb);
-  }
-
   @Test
   public void whenSaveChildRecipesAndGetItThanReturnAllChildRecipes() {
     RecipeDto savedParentRecipe = recipeService.save_recipe(testRecipeDto1);

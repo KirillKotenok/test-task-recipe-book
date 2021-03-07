@@ -12,9 +12,6 @@ import java.util.Date;
 @Data
 public class RecipeDto {
 
-  interface Child {
-  }
-
   private Long recipeId;
 
   @NotNull
@@ -30,6 +27,13 @@ public class RecipeDto {
   public RecipeDto(@NotNull String name, @NotNull String description) {
     this.name = name;
     this.description = description;
+  }
+
+  public RecipeDto(Long recipeId, @NotNull String name, @NotNull String description, Date created) {
+    this.recipeId = recipeId;
+    this.name = name;
+    this.description = description;
+    this.created = created;
   }
 
   public RecipeDto(@NotNull String name, @NotNull String description, RecipeDto parentRecipe) {
